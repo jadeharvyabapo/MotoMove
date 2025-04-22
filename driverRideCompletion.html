@@ -1,0 +1,456 @@
+<html>
+
+<head>
+    <link rel="stylesheet" href="css/drivercompletion.css">
+    <link rel="stylesheet" href="font-awesome/css/font-awesome.css">
+</head>
+
+<body>
+    <header>
+        <div class="nav container">
+            <i class="fa fa-menu" id="menu-icon"></i>
+            <a href="#" class="logo">Moto<span>Move</span></a>
+            <ul class="navbar">
+                <li><a href="index.html" class="active">Home</a></li>
+                <li><a href="ride.html">Ride</a></li>
+                <li><a href="booking.html">Booking</a></li>
+                <li><a href="#">Services</a></li>
+            </ul>
+        </div>
+    </header>
+
+
+    <!--end header-->
+
+
+
+    <h1>
+        <div class="modal" data-modal>
+
+
+
+            <div class="ck-container">
+
+
+                <div class="container2">
+
+                    <form action="">
+
+                        <div class="row">
+
+                            <div class="col">
+
+                                <h3 class="title">Please Click "Ride Completed" if done</h3>
+
+                                <div class="inputBox">
+                                    <span>full name :</span>
+                                    <input type="text" id="fullName" placeholder="Jade Harvy Abapo" readonly>
+                                </div>
+                                <div class="inputBox">
+                                    <span> Pick-up Point</Address> :</span>
+                                    <input type="text" id="pickupLocation" placeholder="CTU Barili Campus" readonly>
+                                </div>
+                                <div class="inputBox">
+                                    <span>Destination :</span>
+                                    <input type="text" id="dropoffLocation" placeholder="Cagay, Barili" readonly>
+                                </div>
+
+                                <div class="inputBox">
+                                    <span>Driver's Contat Number :</span>
+                                    <input type="number" id="contactNumber" placeholder="09665738045" readonly>
+                                </div>
+
+
+
+
+                                <div class="flex">
+
+
+
+                                </div>
+
+                            </div>
+
+
+
+                            <div class="col">
+
+                                <h3 class="title"> Note: You can also give a rate to your ride</h3>
+
+
+                                <div class="colspace">
+                                    <div class="inputBox">
+                                        <span>Driver's Name :</span>
+                                        <input type="text" id="driverName" name="timeField" value="" readonly>
+
+                                    </div>
+
+
+
+                                    <div class="inputBox">
+                                        <div class="paymentimg">
+                                            <span>Time of Pick-up :</span>
+                                            <input type="time" id="pickup-time" name="timeField" value="12:00" readonly>
+                                        </div>
+                                    </div>
+
+                                    <div class="inputBox">
+                                        <span>Time Arrived :</span>
+                                        <input type="time" id="passengerCount" placeholder="In Transit" readonly>
+                                    </div>
+
+
+                                    <div class="inputBox">
+                                        <span>Ride Duration :</span>
+                                        <input type="number " id="rideDuration" placeholder="00" readonly>
+
+
+                                    </div>
+
+
+
+                                    <div class="flex">
+
+
+
+
+
+
+
+                                    </div>
+                                </div>
+
+
+
+                            </div>
+
+
+                        </div>
+
+
+
+                        <script>
+
+                            let driver_namerow;
+
+                            const sessionId = sessionStorage.getItem('unique_session_id');
+                            const userId = sessionStorage.getItem('user_id');
+                            const rb = sessionStorage.getItem('riderbookingIdtrue');
+                            // Declare a global variable
+                                
+                            fetch("getDriverNameAccepted.php", {
+                                method: 'POST', // Send a POST request
+                                headers: {
+                                    'Content-Type': 'application/json', // Set content type to JSON
+                                },
+                                body: JSON.stringify({
+                                    session_id: sessionId,  // Send session_id from sessionStorage
+                                    user_id: userId,        // Send user_id from sessionStorage
+                                    riderbookingID: 123     // You can set the riderbookingID if needed
+                                })
+                            })
+                                .then(response => response.json())  // Parse the response as JSON
+                                .then(datadriver => {
+
+                                    console.log(datadriver);
+                                    driver_namerow = datadriver.queue[0];
+                                    console.log("Driver Queue Data:", driver_namerow); // Handle the data returned
+                                })
+                                .catch(error => {
+                                    console.error("Error fetching data:", error); // Handle any errors that occur
+                                });
+
+
+                            // Later in your code, outside the fetch call, access the global variable
+
+
+
+
+                            // Retrieve the riderbookingID from sessionStorage
+                            // Outputs the stored riderbookingID
+
+
+                            fetch("getRideRequestAccepted.php", {
+                                method: 'POST',  // POST method because you're sending data to the server
+                                headers: {
+                                    'Content-Type': 'application/json'  // Specify JSON content
+                                },
+                                body: JSON.stringify({
+                                    session_id: sessionId,  // Send session_id in request body
+                                    user_id: userId,        // Send user_id in request body
+                                    riderbookingID: rb  // Send the accepted riderbooking ID
+                                })
+                            })
+                                .then(response => response.json())
+                                .then(data => {
+
+                                    console.log(data);  
+
+                                    if (data.success) {
+
+                                        console.log(driver_namerow);
+                                        const firstRideRequest = data.rideRequests[0];
+
+
+
+                                        // Populate the fields with data from the first ride request
+                                        document.getElementById('fullName').value = firstRideRequest.passenger_name;
+                                        document.getElementById('pickupLocation').value = firstRideRequest.pickupPoint;
+                                        document.getElementById('dropoffLocation').value = firstRideRequest.destination;
+                                        document.getElementById('contactNumber').value = firstRideRequest.contactNumber;
+                                        document.getElementById('driverName').value = driver_namerow.driver_name;  // Assuming driver name is stored in sessionStorage
+                                        document.getElementById('pickup-time').value = firstRideRequest.timeofPickUp;
+                                        document.getElementById('rideDuration').value = 0; // Assuming you will calculate ride duration later
+                                    } else {
+                                        console.error(data.message || "Error: No data received");
+                                    }
+                                })
+                                .catch(error => console.error('Error:', error));
+
+
+
+                                
+
+
+                        </script>
+
+
+
+
+
+                        <button type="button" class="btn-submit" id="bookride">Ride Completed</button>
+
+
+                        <script>
+
+document.addEventListener('DOMContentLoaded', function() {
+    console.log("DOM fully loaded");
+    
+    const bookRideButton = document.getElementById('bookride');
+    console.log("Ride Complete button:", bookRideButton);
+
+    let count = 0;
+
+    if (bookRideButton) {
+        bookRideButton.addEventListener('click', function(event) {
+            console.log("Button clicked");
+            event.preventDefault(); // Prevent form submission if it's inside a form
+
+            if (count === 0) {
+                // This is the initial "Ride Complete" click
+                console.log("Ride Complete button clicked");
+
+                // Get the current time
+                const now = new Date();
+                const timeArrived = now.toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' });
+                console.log("Time Arrived:", timeArrived);
+
+                // Update the "Time Arrived" input
+                const timeArrivedInput = document.getElementById('passengerCount');
+                if (timeArrivedInput) {
+                    timeArrivedInput.value = timeArrived;
+                    console.log("Updated Time Arrived input:", timeArrivedInput.value);
+                } else {
+                    console.error("Time Arrived input (passengerCount) not found");
+                }
+
+                // Get the pickup time
+                const pickupTimeInput = document.getElementById('pickup-time');
+                if (pickupTimeInput) {
+                    const pickupTime = pickupTimeInput.value;
+                    console.log("Pickup Time:", pickupTime);
+
+                    // Calculate ride duration
+                    const duration = calculateDuration(pickupTime, timeArrived);
+                    console.log("Calculated Duration:", duration);
+
+                    // Update the "Ride Duration" input
+                    const rideDurationInput = document.getElementById('rideDuration');
+                    if (rideDurationInput) {
+                        rideDurationInput.value = duration;
+                        console.log("Updated Ride Duration input:", rideDurationInput.value);
+                    } else {
+                        console.error("rideDuration input not found");
+                    }
+
+                    // Send data to PHP script
+                    updateRideStatus(timeArrived, duration);
+                } else {
+                    console.error("pickup-time input not found");
+                }
+
+                // Display a completion message
+                alert('Ride completed successfully!');
+
+                // Change the button text to "Drive Again"
+                this.textContent = 'Drive Again';
+                console.log("Changed button text to 'Drive Again'");
+                count++;
+            } else if (count === 1) {
+                // Navigate to dashboarddriver.html
+                window.location.href = 'dashboarddriver.html';
+            }
+        });
+    } else {
+        console.error("Ride Complete button not found");
+    }
+});
+
+function calculateDuration(start, end) {
+    console.log("Calculating duration:", start, end);
+    
+    // Ensure both times have seconds
+    start = ensureSeconds(start);
+    end = ensureSeconds(end);
+
+    const startTime = new Date("1970-01-01T" + start);
+    const endTime = new Date("1970-01-01T" + end);
+    
+    let diff = endTime - startTime;
+    
+    // If end time is on the next day
+    if (diff < 0) {
+        diff += 24 * 60 * 60 * 1000;
+    }
+
+    const minutes = Math.floor(diff / 60000);
+    const hours = Math.floor(minutes / 60);
+    const remainingMinutes = minutes % 60;
+
+    return `${hours}h ${remainingMinutes}m`;
+}
+
+function ensureSeconds(time) {
+    // If the time doesn't include seconds, add ":00"
+    return time.split(':').length < 3 ? time + ':00' : time;
+}
+
+function updateRideStatus(timeArrived, duration) {
+    // Get the riderbookingID from sessionStorage
+    const riderbookingID = sessionStorage.getItem('riderbookingIdtrue');
+    const driverId = sessionStorage.getItem('user_id');
+
+
+    // Prepare the data to send
+    const data = {
+        riderbookingID: riderbookingID,
+        timeArrived: timeArrived,
+        rideDuration: duration,
+        driverId: driverId
+    };
+
+    console.log("Sending data to PHP:", data);
+
+    // Send the data to the PHP script
+    fetch('updateRideStatusifDriverCompletedRide.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(result => {
+        if (result.success) {
+            console.log('Rider status: ' ,data.status , 'driver');
+
+            console.log(result.data);
+        } else {
+            console.error('Failed to update ride status:', result.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+}
+
+
+                        </script>
+
+
+
+
+                    </form>
+
+
+
+
+
+
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+
+        </header>
+
+
+    </h1>
+
+
+
+
+    <!--end home-->
+
+    <!--end cycle-->
+
+    <!--end About-->
+
+    <!--end parts-->
+
+
+    <!--end blog-->
+
+
+    <section class="map">
+        <iframe
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3926.7684812140786!2d123.5407947!3d10.131428!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x33a9623bf0485431%3A0xbcf0a3541b0d909!2sCebu%20Technological%20University%20-%20Barili%20Campus!5e0!3m2!1sen!2sph!4v1646842456284!5m2!1sen!2sph"
+            width="100%" height="450" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+    </section>
+    <section class="footer">
+        <div class="footer-container container">
+            <div class="footer-box">
+                <a href="#" class="logo">Moto<span>Move</span></a>
+                <div class="social">
+                    <a href="#"><i class="fa fa-facebook"></i></a>
+                    <a href="#"><i class="fa fa-instagram"></i></a>
+                    <a href="#"><i class="fa fa-linkedin"></i></a>
+                    <a href="#"><i class="fa fa-telegram"></i></a>
+                </div>
+            </div>
+            <div class="footer-box">
+                <h3>Quick Links</h3>
+                <a href="#">Home</a>
+                <a href="#">Cycles</a>
+                <a href="#">Parts</a>
+                <a href="#">Blog</a>
+            </div>
+            <div class="footer-box">
+                <h3>Legal</h3>
+                <a href="#">Privacy</a>
+                <a href="#">Refund Policy</a>
+                <a href="#">Cookie Policy</a>
+            </div>
+            <div class="footer-box">
+                <h3>Contact</h3>
+                <p>Afghanistan</p>
+                <p>India</p>
+                <p>United States</p>
+            </div>
+        </div>
+    </section>
+
+    <!--end footer-->
+    <div class="copyright">
+        <p>&#169; MotoMove All Right Reserved</p>
+    </div>
+
+
+
+</body>
+
+</html>

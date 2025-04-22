@@ -1,0 +1,357 @@
+<html>
+    <head>
+        <link rel="stylesheet" href="css/ridecompletion.css">
+        <link rel="stylesheet" href="font-awesome/css/font-awesome.css">
+    </head>
+    <body>
+        <header>
+            <div class="nav container">
+                <i class="fa fa-menu" id="menu-icon"></i>
+                <a href="#" class="logo">Moto<span>Move</span></a>
+                <ul class="navbar">
+                    <li><a href="index.html" class="active">Home</a></li>
+                    <li><a href="ride.html">Ride</a></li>
+                    <li><a href="booking.html">Booking</a></li>
+                    <li><a href="#">Services</a></li>
+                </ul>
+            </div>
+        </header>
+
+
+        <!--end header-->
+
+
+        
+        <h1> 
+            <div class="modal" data-modal>
+
+ 
+
+                <div class="ck-container">
+              
+            
+                  <div class="container2">
+            
+                    <form action="">
+                
+                        <div class="row">
+                
+                            <div class="col">
+                
+                                <h3 class="title" id="donenote">"Please click 'Ride Completed' if you have been delivered safely."</h3>
+                
+                                <div class="inputBox">
+                                    <span>full name :</span>
+                                    <input type="text" id="fullName"placeholder="Jade Harvy Abapo" readonly>
+                                </div>
+                                <div class="inputBox">
+                                    <span> Pick-up Point</Address> :</span>
+                                    <input type="text" id="pickupLocation" placeholder="CTU Barili Campus" readonly>
+                                </div>
+                                <div class="inputBox">
+                                    <span>Destination :</span>
+                                    <input type="text" id="dropoffLocation"placeholder="Cagay, Barili" readonly>
+                                </div>
+                             
+                                <div class="inputBox">
+                                    <span>Driver's Contat Number :</span>
+                                    <input type="number"id ="contactNumber" placeholder="09665738045" readonly>
+                                </div>
+
+
+                                
+                
+                                <div class="flex">
+
+                                    
+                        
+                                </div>
+                
+                            </div>
+
+                            
+                
+                            <div class="col">
+                
+                                <h3 class="title"> Note: Don't forget to rate and comment on your ride experience.</h3>
+                
+                               
+                                <div class="colspace">
+
+
+                                    <div class="inputBox">
+                                        <span>Driver's Name :</span>
+                                        <input type="text" id="drivername" placeholder="driver" readonly>
+                                    </div>
+
+
+                                    
+
+                                    <div class="inputBox">
+                                        <div class="paymentimg">
+                                        <span>Time of Pick-up :</span>
+                                        <input type="time" id="pickup-time" name="timeField" value="12:00" readonly>
+                                    </div>
+                                    </div>
+
+                                    <div class="inputBox">
+                                        <span>Time Arrived :</span>
+                                        <input type="time" id="passengerCount" placeholder="In Transit" readonly>
+                                    </div>
+                               
+
+                                <div class="inputBox">
+                                    <span>Ride Duration :</span>
+                                    <input type="number "id = "rideDuration" placeholder="in minutes" readonly>
+
+                                    
+                                </div>
+
+                                
+                
+                                <div class="flex">
+
+
+                                    
+
+
+                                   
+                                    
+                                </div>
+                                </div>
+
+
+                
+                            </div>
+                    
+                            
+                        </div>
+                    
+
+                        <h3>Rate Your Driver</h3>
+                            <div class="rating">
+                                     <select id="rating">
+                                           
+                                            
+                            
+                
+                                            <option value="5">5 - Excellent</option>
+                                            <option value="4">4 - Very Good</option>
+                                            <option value="3">3 - Good</option>
+                                            <option value="2">2 - Fair</option>
+                                            <option value="1">1 - Poor</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="feedback">
+                                        <span>Give a Feedback of you Ride :</span>
+                                        <div>
+                                        <input type="text "id = "feedback" placeholder="in minutes">
+                                    </div>
+                                        
+                                    </div>
+    
+                       
+
+
+                        <button type="button" class="btn-submit" id="bookride">Ride Completed</button>
+
+                        <script>
+                            const sessionId = sessionStorage.getItem('unique_session_id');
+                            const userId = sessionStorage.getItem('user_id');
+                            console.log('Session ID for this tab:', sessionId);
+                            
+                            fetch("getBookingStatus.php", {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify({
+                                    session_id: sessionId,
+                                    user_id: userId
+                                })
+                            })
+                            .then(response => response.json())
+                            .then(data => {
+                                console.log(data);
+                            
+                                if (data.success) {
+                                    // Populate rider's details
+                                    document.getElementById('fullName').value = data.data.rider_fullname;
+                                    document.getElementById('pickupLocation').value = data.data.pickupPoint;
+                                    document.getElementById('dropoffLocation').value = data.data.destination;
+                                    document.getElementById('contactNumber').value = data.data.contactNumber;
+                                    document.getElementById('pickup-time').value = data.data.timeofPickUp;
+                                    document.getElementById('passengerCount').value = data.data.timeArrived;
+                                    document.getElementById('rideDuration').value = data.data.rideDuration;
+                                    
+                                    // Set the driver'  s name, using a fallback if it's not available
+                                    console.log("Driver's Name, id:", data.data.driver_fullname, data.data.fk_driverId);
+                                    sessionStorage.setItem('driverId', data.data.fk_driverId);
+                                    sessionStorage.setItem('riderbookingID', data.data.riderbookingID);
+                                    
+
+
+
+
+document.getElementById('drivername').value = data.data.driver_fullname || "No driver assigned";
+                                }   
+                            })
+                            .catch(error => console.error('Error:', error));
+                            </script>
+                            
+
+
+
+
+                        <script>                            
+document.addEventListener('DOMContentLoaded', function () {
+    const rideCompleteButton = document.getElementById('bookride');
+    if (!rideCompleteButton) {
+        console.error("Ride Complete button not found");
+        return;
+    }
+
+    rideCompleteButton.addEventListener('click', function (event) {
+        event.preventDefault();
+        console.log("Button clicked");
+
+        if (this.textContent === 'Go to Home') {
+            // If the button text is already 'Go to Home', redirect to index page
+            window.location.href = 'index.html';
+            return;
+        }
+
+        const riderId = sessionStorage.getItem('user_id');
+        const driverId = sessionStorage.getItem('driverId');
+        const riderBookingID = sessionStorage.getItem('riderbookingID');
+        const rating = document.getElementById('rating').value;
+        const feedback = document.getElementById('feedback').value;
+
+        console.log("Data to be sent:", {
+            riderBookingID,
+            riderId,
+            driverId,
+            rating,
+            feedback
+        });
+
+        // Send data to the server using fetch
+        fetch('updatedRideandFeedback.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                riderBookingID,
+                riderId,
+                driverId,
+                rating,
+                feedback
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Server response:', data);
+            if (data.success) {
+                console.log('Feedback submitted successfully');
+                // Change button text to 'Go to Home'
+                this.textContent = 'Go to Home';
+                // Optionally, you can disable the rating and feedback inputs here
+                document.getElementById('rating').disabled = true;
+                document.getElementById('feedback').disabled = true;
+            } else {
+                console.error('Error:', data.message);
+                alert('Failed to submit feedback. Please try again.');
+            }
+        })
+        .catch(error => {
+            console.error('Request failed:', error);
+            alert('An error occurred. Please try again.');
+        });
+    });
+});
+
+                        </script>                            
+                                
+                      </form>
+            
+                    
+                  
+                    
+                      
+                
+                </div>    
+                
+                
+                </div>
+            
+      
+              </div>
+
+            
+              </header>
+            
+            
+        </h1>
+
+
+
+       
+        <!--end home-->
+      
+        <!--end cycle-->
+       
+        <!--end About-->
+      
+        <!--end parts-->
+       
+       
+        <!--end blog-->
+        
+
+        <section class="map">
+            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3926.7684812140786!2d123.5407947!3d10.131428!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x33a9623bf0485431%3A0xbcf0a3541b0d909!2sCebu%20Technological%20University%20-%20Barili%20Campus!5e0!3m2!1sen!2sph!4v1646842456284!5m2!1sen!2sph" width="100%" height="450" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+        </section> 
+        <section class="footer">
+            <div class="footer-container container">
+                <div class="footer-box">
+                    <a href="#" class="logo">Moto<span>Move</span></a>
+                    <div class="social">
+                        <a href="#"><i class="fa fa-facebook"></i></a>
+                        <a href="#"><i class="fa fa-instagram"></i></a>
+                        <a href="#"><i class="fa fa-linkedin"></i></a>
+                        <a href="#"><i class="fa fa-telegram"></i></a>
+                    </div>
+                </div>
+                <div class="footer-box">
+                    <h3>Quick Links</h3>
+                    <a href="#">Home</a>
+                    <a href="#">Cycles</a>
+                    <a href="#">Parts</a>
+                    <a href="#">Blog</a>
+                </div>
+                <div class="footer-box">
+                    <h3>Legal</h3>
+                    <a href="#">Privacy</a>
+                    <a href="#">Refund Policy</a>
+                    <a href="#">Cookie Policy</a>
+                </div>
+                <div class="footer-box">
+                    <h3>Contact</h3>
+                    <p>Afghanistan</p>
+                    <p>India</p>
+                    <p>United States</p>
+                </div>
+            </div>
+        </section>
+
+        <!--end footer-->
+        <div class="copyright">
+            <p>&#169; MotoMove All Right Reserved</p>
+        </div>
+
+
+        
+    </body>
+</html>

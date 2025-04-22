@@ -1,0 +1,298 @@
+<html>
+<head>
+    <link rel="stylesheet" href="css/ride.css">
+    <link rel="stylesheet" href="font-awesome/css/font-awesome.css">
+</head>
+<body>
+    <header>
+        <div class="nav container">
+            <i class="fa fa-menu" id="menu-icon"></i>
+            <a href="#" class="logo">Moto<span>Move</span></a>
+            <ul class="navbar">
+                <li><a href="indexdriver.html" class="active">Home</a></li>
+                <li><a href="drive.html">Drive</a></li>
+                <li><a href="bookingdriver.html">Dashboard</a></li>
+                <li><a href="#">Services</a></li>
+            </ul>
+        </div>
+    </header>
+
+    <h1>
+        <div class="modal" data-modal>
+            <div class="ck-container">
+                <div class="container2">
+                    <form id="driverForm" enctype="multipart/form-data">
+                        <h1>Registration Status: <span id="applicationStatus"></span></h1>
+                        <script>   document.getElementById('applicationStatus').style.color = 'red';</script>
+
+
+                        <div class="row">
+                            <div class="col">
+                                <h3 class="title">Please double check your inputs </h3>
+                
+                                <div class="inputBox">
+                                    <span>Full Name :</span>
+                                    <input type="text" id="fullName" placeholder="Jade Harvy Abapo" readonly>
+                                </div>
+                                <div class="inputBox">
+                                    <span>Home Address :</span>
+                                    <input type="text" id="address" placeholder="CTU Barili Campus" required>
+                                </div>
+                                <div class="inputBox">
+                                    <span>License Number :</span>
+                                    <input type="text" id="licenseNumber" placeholder="AB1234567" required>
+                                </div>
+                                
+                                <div class="inputBox">
+                                    <span>License Category :</span>
+                                    <input type="text" id="licenseCategory" placeholder="Category A" required>
+                                </div>
+
+                                <div class="inputBox">
+                                    <span>Contact Number :</span>
+                                    <input type="number" id="contactNumber" placeholder="09665738045" required>
+                                </div>
+                
+                                <div class="inputBox">
+                                    <span>Birthdate :</span>
+                                    <input type="date" id="birthdate" required>
+                                </div>
+                                <div class="inputBox">
+                                    <span>Emergency Contact Name :</span>
+                                    <input type="text" id="emergencyContactName" placeholder="John Doe" required>
+                                </div>
+                                <div class="inputBox">
+                                    <span>Emergency Contact Number :</span>
+                                    <input type="text" id="emergencyContactNumber" placeholder="09123456789" required>
+                                </div>
+                            </div>
+                
+                            <div class="col">
+                                <h3 class="title">Vehicle and License Details</h3>
+                
+                                <div class="inputBox">
+                                    <span>Motorcycle Brand :</span>
+                                    <input type="text" id="motorcycleBrand" placeholder="Yamaha" required>
+                                </div>
+                
+                                <div class="inputBox">
+                                    <span>Motorcycle Model :</span>
+                                    <input type="text" id="motorcycleModel" placeholder="MT-15" required>
+                                </div>
+                
+                                <div class="inputBox">
+                                    <span>Cylinder Capacity (cc) :</span>
+                                    <input type="number" id="cylinderCapacity" placeholder="155" required>
+                                </div>
+                
+                                <div class="inputBox">
+                                    <span>License Expiry Date :</span>
+                                    <input type="date" id="licenseExpiryDate" required>
+                                </div>
+                
+                                <div class="inputBox">
+                                    <span>Vehicle Plate Number :</span>
+                                    <input type="text" id="vehicleRegNumber" placeholder="ABC1234" required>
+                                </div>
+                
+                                <div class="inputBox">
+                                    <span>Upload Your Face Photo :</span>
+                                    <input type="file" id="driverPhoto" accept=".jpg,.png" required>
+                                </div>
+                
+                                <div class="inputBox">
+                                    <span>Upload Your License Photo :</span>
+                                    <input type="file" id="driversLicense" accept=".jpg,.png,.pdf" required>
+                                </div>
+                
+                                <div class="inputBox">
+                                    <span>Upload OR/CR  Photo :</span>
+                                    <input type="file" id="vehicleRegistration" accept=".jpg,.png,.pdf" required>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn-submit" id="applydriver">Confirm Application</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </h1>
+
+    <!-- Your JavaScript -->
+        <script>
+
+    const sessionId = sessionStorage.getItem('unique_session_id');
+                const userId = sessionStorage.getItem('user_id');
+                console.log('Session ID for this tab:', sessionId);
+
+                
+                fetch("getUserInfo.php", {
+                                    method: 'POST',  // POST method because you're sending data to the server
+                                    headers: {
+                                        'Content-Type': 'application/json'  // Specify JSON content
+                                    },
+                                    body: JSON.stringify({
+                                        session_id: sessionId,  // Send session_id in request body
+                                        user_id: userId         // Send user_id in request body
+                                    })
+                                })
+                                    .then(response => response.json())
+                                    .then(data => {
+                                        console.log(data); // Log the entire response to see its structure
+                                        if (data.success) {
+                                            // Select the full name input field and set its value
+                                            console.log('Session ID for this tab:', sessionId);
+
+                                            document.getElementById('fullName').value = data.user.fullname;
+                                        } else {
+                                            console.error("Error:", data.message);
+                                        }
+                                    })
+                                    .catch(error => console.error("Error fetching user info:", error));
+            
+            document.getElementById('driverForm').addEventListener('submit', function (event) {
+                event.preventDefault(); // Prevent the default form submission
+
+                // Collect data from the form fields (Driver Data)
+                const fullName = document.getElementById('fullName').value;
+                const address = document.getElementById('address').value;
+                const licenseNumber = document.getElementById('licenseNumber').value;
+                const contactNumber = document.getElementById('contactNumber').value;
+                const birthdate = document.getElementById('birthdate').value;
+                const emergencyContactName = document.getElementById('emergencyContactName').value;
+                const emergencyContactNumber = document.getElementById('emergencyContactNumber').value;
+                const licenseExpiryDate = document.getElementById('licenseExpiryDate').value;
+                const driverPhoto = document.getElementById('driverPhoto').files[0]; // Driver's photo
+                const driverLicensePhoto = document.getElementById('driversLicense').files[0]; // Driver's license photo
+
+                // Collect data from the vehicle form fields
+                const vehicleBrand = document.getElementById('motorcycleBrand').value;
+                const vehicleModel = document.getElementById('motorcycleModel').value;
+                const cylinderCapacity = document.getElementById('cylinderCapacity').value;
+                const vehiclePlateNumber = document.getElementById('vehicleRegNumber').value;
+                const vehicleRegistrationPhoto = document.getElementById('vehicleRegistration').files[0]; // Vehicle registration photo
+
+                // Create the driver and vehicle data object
+                const driverData = {
+                    fullName,
+                    address,
+                    licenseNumber,
+                    contactNumber,
+                    birthdate,
+                    emergencyContactName,
+                    emergencyContactNumber,
+                    licenseExpiryDate,
+                    driverPhoto,
+                    driverLicensePhoto
+                };
+
+                const vehicleData = {
+                    vehicleBrand,
+                    vehicleModel,
+                    cylinderCapacity,
+                    vehiclePlateNumber,
+                    vehicleRegistrationPhoto
+                };
+
+            
+
+                // Prepare the form data to be sent
+                const formData = new FormData();
+                formData.append('session_id', sessionId);
+                formData.append('user_id', userId);
+                formData.append('driverData', JSON.stringify(driverData));
+                formData.append('vehicleData', JSON.stringify(vehicleData));
+
+                // Append files (photos) to the form data
+                formData.append('driverPhoto', driverPhoto);
+                formData.append('driverLicensePhoto', driverLicensePhoto);
+                formData.append('vehicleRegistrationPhoto', vehicleRegistrationPhoto);
+
+                console.log(formData);
+
+                fetch("addDriverDetails.php", {
+                    method: 'POST',
+                    body: formData  // Send formData which includes the files
+                })
+                .then(response => response.json())
+                .then(data => {
+
+                    console.log(data);
+                    // Handle the server response here (e.g., show success or error message)
+                    if(data.success){
+                        console.log('Response from server:', data); // Log the server response
+                        document.getElementById('applicationStatus').style.color = 'red'; // Set the color to green
+                        document.getElementById('applicationStatus').textContent = 'Pending';
+                        checkDriverStatus(userId)
+                        document.getElementById('applydriver').disabled.true; // Set the color to green
+                        document.getElementById('applydriver').style.color = 'red'; // Set the color to green
+
+
+
+                    }
+                })
+                .catch(error => {
+                    console.error('Error sending driver data:', error);
+                });
+            });
+        </script>
+
+
+<script>
+    function checkDriverStatus(userId) {
+        // Create a FormData object to send the userId (and potentially other data)
+        let formData = new FormData();
+        formData.append('user_id', userId); // Add user_id to the formData object
+
+        // Make the fetch request to check the driver's application status
+        fetch("handleDriverApplicationAcceptedorDecline.php", {
+            method: 'POST',
+            body: formData  // Send formData which includes the user_id
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log(data);  // For debugging, check the response data
+
+            // Check if the data response indicates success and the driver status is 'accepted'
+            if (data.success && data.status === 'approved') {
+                document.getElementById('applicationStatus').style.color = 'green'; // Set the color to green
+                document.getElementById('applicationStatus').textContent = 'Apporved';    
+                   
+                document.getElementById('applydriver').disabled.true; // Set the color to green
+                        document.getElementById('applydriver').style.backgroundColor = 'gray'; // Set the color to green
+
+               
+                window.location.href = 'dashboarddriver.html';
+                 // Check every 5 seconds
+            } 
+            
+            else if (data.success && data.status === 'declined') {
+                document.getElementById('applicationStatus').style.color = 'red'; // Set the color to green
+                document.getElementById('applicationStatus').textContent = 'Declined';  
+                document.getElementById('applydriver').disabled.true; // Set the color to green
+                        document.getElementById('applydriver').style.backgroundColor = 'gray'; // Set the color to green
+
+ 
+            }
+            
+            else {
+                // If not accepted, keep checking every 5 seconds
+                setTimeout(function() {
+                    checkDriverStatus(userId);  // Recursively check the status
+                }, 5000);  // Check every 5 seconds
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);  // Log any errors that occur during the fetch request
+        });
+    }
+
+    // Example: Call the function to check the status (make sure 'userId' is defined)
+    // You should make sure `userId` is available from your context
+    checkDriverStatus(userId);  // Call the function to start checking the status
+
+</script>
+
+
+</body>
+</html>

@@ -1,0 +1,339 @@
+<html>
+
+<head>
+    <link rel="stylesheet" href="css/ride.css">
+    <link rel="stylesheet" href="font-awesome/css/font-awesome.css">
+</head>
+
+<body>
+    <header>
+        <div class="nav container">
+            <i class="fa fa-menu" id="menu-icon"></i>
+            <a href="index.html" class="logo">
+                <img src="image/logo.png" alt="MotoMove Logo">
+                Moto<span>Move</span>
+            </a>
+            <ul class="navbar">
+                <li><a href="index.html" class="active">Home</a></li>
+                <li><a href="ride.html">Ride</a></li>
+                <li><a href="">Booking</a></li>
+                <li><a href="index.html">Services</a></li>
+            </ul>
+        </div>
+    </header>
+
+
+    <!--end header-->
+
+
+
+    <h1>
+        <div class="modal" data-modal>
+
+
+
+            <div class="ck-container">
+
+
+                <div class="container2">
+
+                    <form action="">
+
+                        <div class="row">
+
+                            <div class="col">
+
+                                <h3 class="title">Please double check your inputs before confirmation</h3>
+
+                                <div class="inputBox">
+                                    <span>full name :</span>
+                                    <input type="text" id="fullName" placeholder="Jade Harvy Abapo" readonly>
+                                </div>
+                                <div class="inputBox">
+                                    <span> Pick-up Point</Address> :</span>
+                                    <input type="text" id="pickupLocation" placeholder="CTU Barili Campus">
+                                </div>
+                                <div class="inputBox">
+                                    <span>Destination :</span>
+                                    <input type="text" id="dropoffLocation" placeholder="Cagay, Barili">
+                                </div>
+
+                                <div class="inputBox">
+                                    <span>Contact Number :</span>
+                                    <input type="number" id="contactNumber" placeholder="09665738045">
+                                </div>
+
+                                <div class="flex">
+
+
+                                </div>
+
+                            </div>
+
+                            <div class="col">
+
+                                <h3 class="title"> Note: Only Personal Payment is Allowed as of now</h3>
+
+
+                                <div class="colspace">
+                                    <div class="inputBox">
+                                        <span>booking type :</span>
+                                        <select id="select">
+                                            <option value="Advance Booking">Advance Booking</option>
+                                            <option value="On-Time Booking">On-Time Booking</option>
+
+                                        </select>
+                                    </div>
+
+
+
+                                    <div class="inputBox">
+                                        <div class="paymentimg">
+                                            <span>Time of Pick-up :</span>
+                                            <input type="time" id="pickup-time" name="timeField" value="12:00">
+                                        </div>
+                                    </div>
+
+                                    <div class="inputBox">
+                                        <span>No. passengers :</span>
+                                        <input type="number" id="passengerCount" placeholder="1" min="1" max="2">
+                                    </div>
+                                    
+                                    <script>
+                                    document.getElementById('passengerCount').addEventListener('input', function() {
+                                        let value = this.value;
+                                        
+                                        if (value !== '1' && value !== '2') {
+                                            this.value = ''; 
+                                            
+                                        }
+                                    });
+
+                                </script>
+
+
+                                    <div class="inputBox">
+                                        <span>Payment Method :</span>
+                                        <select id="select">
+                                            <option value="personal" selected>Personal Payment</option>
+                                            <option value="gcash" disabled>GCash</option>
+                                            <option value="creditCard" disabled>Credit Card</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="flex">
+
+
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <button type="button" class="btn-submit" id="bookride">Confirm Book</button>
+
+                        <script>
+                            document.addEventListener("DOMContentLoaded", function () {
+                                // Fetch user info when the DOM is fully loaded
+
+
+                                const sessionId = sessionStorage.getItem('unique_session_id');
+                                const userId = sessionStorage.getItem('user_id');
+                                console.log('Session ID for this tab:', sessionId);  // Correctly log the session ID
+
+                                fetch("getUserInfo.php", {
+                                    method: 'POST',  // POST method because you're sending data to the server
+                                    headers: {
+                                        'Content-Type': 'application/json'  // Specify JSON content
+                                    },
+                                    body: JSON.stringify({
+                                        session_id: sessionId,  // Send session_id in request body
+                                        user_id: userId         // Send user_id in request body
+                                    })
+                                })
+                                    .then(response => response.json())
+                                    .then(data => {
+                                        console.log(data); // Log the entire response to see its structure
+                                        if (data.success) {
+                                            // Select the full name input field and set its value
+                                            console.log('Session ID for this tab:', sessionId);
+
+                                            document.getElementById('fullName').value = data.user.fullname;
+                                        } else {
+                                            console.error("Error:", data.message);
+                                        }
+                                    })
+                                    .catch(error => console.error("Error fetching user info:", error));
+
+                                // Event listener for booking type change
+                                document.getElementById('select').addEventListener('change', function () {
+                                    const pickupTimeInput = document.getElementById('pickup-time'); // Ensure you get the input element
+                                    if (this.value === 'On-Time Booking') {
+                                        const now = new Date();
+                                        now.setMinutes(now.getMinutes() + 10); // Add 10 minutes
+                                        const hours = String(now.getHours()).padStart(2, '0');
+                                        const minutes = String(now.getMinutes()).padStart(2, '0');
+                                        const formattedTime = `${hours}:${minutes}`;
+                                        pickupTimeInput.value = formattedTime; // Set the time
+                                        pickupTimeInput.setAttribute('readonly', true); // Make it uneditable
+                                    } else {
+                                        pickupTimeInput.value = ''; // Clear if not on-time booking
+                                        pickupTimeInput.removeAttribute('readonly'); // Make it editable again
+                                    }
+                                });
+
+                                // Handle booking confirmation
+                                document.getElementById('bookride').addEventListener('click', function (event) {
+                                    event.preventDefault(); // Prevent the default form submission
+
+                                    // Collect data from the form fields
+                                    const fullName = document.getElementById('fullName').value; // Adjust ID as needed
+                                    const pickupLocation = document.getElementById('pickupLocation').value; // Adjust ID as needed
+                                    const dropoffLocation = document.getElementById('dropoffLocation').value; // Adjust ID as needed
+                                    const contactNumber = document.getElementById('contactNumber').value; // Adjust ID as needed
+                                    const bookingType = document.getElementById('select').value; // Adjust ID as needed
+                                    const pickupTime = document.getElementById('pickup-time').value; // Adjust ID as needed
+                                    const passengerCount = document.getElementById('passengerCount').value; // Adjust ID as needed
+
+
+                                    // Create the data object
+                                    const bookingData = {
+                                        fullName,
+                                        pickupLocation,
+                                        dropoffLocation,
+                                        contactNumber,
+                                        bookingType,
+                                        pickupTime,
+                                        passengerCount
+                                    };
+
+
+                                    // Send booking data to the server
+
+                                    const sessionId = sessionStorage.getItem('unique_session_id');
+                                    const userId = sessionStorage.getItem('user_id');
+                                    console.log('Session ID for this tab:', sessionId);  // Correctly log the session ID
+
+                                    fetch("bookride.php", {
+                                        method: 'POST',  // POST method because you're sending data to the server
+                                        headers: {
+                                            'Content-Type': 'application/json'  // Specify JSON content
+                                        },
+                                            body: JSON.stringify({
+                                                session_id: sessionId,  // Send session_id in request body
+                                                user_id: userId  ,
+                                                bookingData: bookingData      // Send user_id in request body
+                                            })
+                                    })
+                                        .then(response => response.json())
+                                        .then(data => {
+                                            console.log(bookingData); // Log the booking data to make sure it's correct
+
+                                            console.log('Response from server:', data); // Log the server response
+                                            // Display success or error message based on the server response
+                                            if (data.success) {
+                                                alert("good"); // Show success message
+                                                window.location.href = 'booking.html';
+                                            } else {
+                                                alert("error"); // Show error message
+                                            }
+                                        })
+                                        .catch(error => {
+                                            console.error('Error sending booking data:', error);
+                                        });
+                                });
+                            });
+
+                        </script>
+
+
+                    </form>
+
+
+
+
+
+
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+
+        </header>
+
+
+    </h1>
+
+
+
+
+    <!--end home-->
+
+    <!--end cycle-->
+
+    <!--end About-->
+
+    <!--end parts-->
+
+
+    <!--end blog-->
+
+
+    <section class="map">
+        
+        <div class="heading">
+            <span>Guide Map </span>
+            <p>
+                Navigate your journey with ease, your path starts here.</p>
+        <iframe
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3926.7684812140786!2d123.5407947!3d10.131428!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x33a9623bf0485431%3A0xbcf0a3541b0d909!2sCebu%20Technological%20University%20-%20Barili%20Campus!5e0!3m2!1sen!2sph!4v1646842456284!5m2!1sen!2sph"
+            width="100%" height="450" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+    </section>
+    <section class="footer">
+        <div class="footer-container container">
+            <div class="footer-box">
+                <a href="#" class="logo">Moto<span>Move</span></a>
+                <div class="social">
+                    <a href="#"><i class="fa fa-facebook"></i></a>
+                    <a href="#"><i class="fa fa-instagram"></i></a>
+                    <a href="#"><i class="fa fa-linkedin"></i></a>
+                    <a href="#"><i class="fa fa-telegram"></i></a>
+                </div>
+            </div>
+            <div class="footer-box">
+                <h3>Quick Links</h3>
+                <a href="#">Home</a>
+                <a href="#">Cycles</a>
+                <a href="#">Parts</a>
+                <a href="#">Blog</a>
+            </div>
+            <div class="footer-box">
+                <h3>Legal</h3>
+                <a href="#">Privacy</a>
+                <a href="#">Refund Policy</a>
+                <a href="#">Cookie Policy</a>
+            </div>
+            <div class="footer-box">
+                <h3>Contact</h3>
+                <p>Afghanistan</p>
+                <p>India</p>
+                <p>United States</p>
+            </div>
+        </div>
+    </section>
+
+    <!--end footer-->
+    <div class="copyright">
+        <p>&#169; MotoMove All Right Reserved</p>
+    </div>
+
+
+
+</body>
+
+</html>

@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Responsive Admin Dashboard | Korsat X Parmaga</title>
+    <!-- ======= Styles ====== -->
+    <link rel="stylesheet" href="css/admin.css">
+
+    <style>
+        .actionBtn {
+    padding: 8px 12px;
+    border: none;
+    border-radius: 4px;
+    font-weight: 600;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin: 3px;
+    min-width: 90px;
+    width: 90px; /* Set a fixed width */
+    text-align: center;
+    display: inline-block;
+}
+
+.approveBtn {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.declineBtn {
+    background-color: #f44336;
+    color: white;
+}
+
+.actionBtn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+}
+
+.actionBtn:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.approveBtn:hover {
+    background-color: #45a049;
+}
+
+.declineBtn:hover {
+    background-color: #da190b;
+}
+
+/* Ensure buttons are on the same line with a small gap */
+.actionBtn + .actionBtn {
+    margin-left: 8px;
+}
+
+.actionBtn {
+    width: 100px;
+    min-width: 100px;
+    padding: 10px 12px;
+}
+
+
+    </style>
+</head>
+
+<body>
+    <!-- =============== Navigation ================ -->
+    <div class="container">
+        <div class="navigation">
+            <ul>
+                <li>
+                    <a href="#">
+                        <a href="#" class="logo">
+                            <img src="image/logo.png" alt="MotoMove Logo">
+                            Moto<span>Move</span>
+                        </a>
+                     
+                    </a>
+                </li>
+
+                <li>
+                    <a href="#cardBox">
+                        <span class="icon">
+                            <ion-icon name="home-outline"></ion-icon>
+                        </span>
+                        <span class="title">Dashboard</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="#">
+                        <span class="icon">
+                            <ion-icon name="car-outline"></ion-icon>
+                        </span>
+                        <span class="title">Ride Request</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="#">
+                        <span class="icon">
+                            <ion-icon name="accessibility-outline"></ion-icon> </span>
+                        <span class="title">Driver Queue</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="#">
+                        <span class="icon">
+                            <ion-icon name="help-outline"></ion-icon>
+                        </span>
+                        <span class="title">Driver Application </span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="#">
+                        <span class="icon">
+                            <ion-icon name="people-outline"></ion-icon>
+                        </span>
+                        <span class="title">Users</span>
+                    </a>
+                </li>
+
+
+
+                <li>
+                    <a href="#">
+                        <span class="icon">
+                            <ion-icon name="log-out-outline"></ion-icon>
+                        </span>
+                        <span class="title">Sign Out</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- ========================= Main ==================== -->
+        <div class="main">
+            <div class="topbar">
+                <div class="toggle">
+                    <ion-icon name="menu-outline"></ion-icon>
+                </div>
+
+                <div class="search">
+                    <label>
+                        <input type="text" placeholder="Search here">
+                        <ion-icon name="search-outline"></ion-icon>
+                    </label>
+                </div>
+
+                <div class="user">
+                    <img src="assets/imgs/customer01.jpg" alt="">
+                </div>
+            </div>
+
+            <!-- ======================= Cards ================== -->
+<div class="cardBox">
+    <div class="card" id="totalUsersCard">
+        <div>
+            <div class="numbers" id="totalUsersCount">0</div>
+            <div class="cardName">Total Users</div>
+        </div>
+        <div class="iconBx">
+            <ion-icon name="people-outline"></ion-icon>
+        </div>
+    </div>
+
+    <div class="card" id="activeDriversCard">
+        <div>
+            <div class="numbers" id="activeDriversCount">0</div>
+            <div class="cardName">Drivers in Queue</div>
+        </div>
+        <div class="iconBx">
+            <ion-icon name="speedometer-outline"></ion-icon>
+        </div>
+    </div>
+
+    <div class="card" id="rideRequestsCard">
+        <div>
+            <div class="numbers" id="rideRequestsCount">0</div>
+            <div class="cardName">Ride Requests</div>
+        </div>
+        <div class="iconBx">
+            <ion-icon name="car-outline"></ion-icon>
+        </div>
+    </div>
+
+    <div class="card" id="completedRidesCard">
+        <div>
+            <div class="numbers" id="completedRidesCount">0</div>
+            <div class="cardName">Completed Rides</div>
+        </div>
+        <div class="iconBx">
+            <ion-icon name="cash-outline"></ion-icon>
+        </div>
+    </div>
+</div>
+
+<script>
+    // ... existing script ...
+    
+    async function updateDashboardCards() {
+        try {
+            const response = await fetch('getDashboardStats.php');
+            const data = await response.json();
+
+            console.log(data);
+    
+            if (data.success) {
+                document.getElementById('totalUsersCount').textContent = data.totalUsers;
+                document.getElementById('activeDriversCount').textContent = data.driversInQueue;
+                document.getElementById('rideRequestsCount').textContent = data.rideRequests;
+                document.getElementById('completedRidesCount').textContent = data.completedRides;
+            } else {
+                console.error('Failed to fetch dashboard stats:', data.message);
+            }
+        } catch (error) {
+            console.error('Error fetching dashboard stats:', error);
+        }
+    }
+    
+    // Call the function when the page loads
+    document.addEventListener('DOMContentLoaded', updateDashboardCards);
+    
+    // Optionally, update the stats every 30 seconds
+    setInterval(updateDashboardCards, 30000);
+    </script>
+    
+
+            <!-- ================ Order Details List ================= -->
+            <div class="details">
+                <div class="recentOrders">
+                    <div class="cardHeader">
+                        <h2> Ride Summary </h2>
+                        <a href="#" class="btn">View All</a>
+                    </div>
+
+                    <table>
+                        <thead>
+                            <tr>
+                                <td>Passenger Name</td>
+                                <td>Driver Number</td>
+                                <td>Pickup Point</td>
+                                <td>Destination</td>
+                                <td>Number of Passengers</td>
+                                <td>Time of Pickup</td>
+                                <td>Time Arrived</td>
+                                <td>Status</td>
+                            </tr>
+                        </thead>
+                        <tbody id="rideRequestTable">
+                            <!-- Rows will be dynamically inserted here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <script>
+
+                async function fetchRideRequests() {
+                    try {
+                        const response = await fetch("adminRideRequest.php");
+                        const data = await response.json();
+
+                        console.log("your data", data);
+
+                        if (data.success) {
+                            const rideList = document.getElementById("rideRequestTable");
+                            rideList.innerHTML = ""; // Clear existing content
+
+                            // Loop through ride requests and display them
+                            data.rideRequests.forEach((request) => {
+
+
+                                const row = document.createElement("tr");
+
+                                row.innerHTML = `
+            <td>${request.passenger_name}</td>
+            <td>${request.pickupPoint}</td>
+            <td>${request.destination}</td>
+            <td>${request.contactNumber}</td>
+            <td>${request.numberofPassenger}</td>
+            <td>${request.timeofPickUp}</td>
+                        <td>Null</td>
+
+                        <td>${request.status}</td>
+
+           
+          `;
+
+                                rideList.appendChild(row);
+                            });
+                        } else {
+                            console.error("Failed to fetch ride requests");
+                        }
+                    } catch (error) {
+                        console.error("Error fetching ride requests:", error);
+                    }
+                }
+
+                // Call the function to fetch ride requests
+                fetchRideRequests();
+
+
+            </script>
+
+
+
+        <!-- ================= Driver Queue ================ -->
+
+<div class="details">
+    <div class="recentOrders">
+        <div class="cardHeader">
+            <h2>Driver Queue</h2>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <td>Order Number</td>
+                    <td>Driver Name</td>
+                    <td>Registration Time</td>
+                    <td>Status</td>
+                </tr>
+            </thead>
+            <tbody id="driverQueue">
+                <!-- Data will be injected here dynamically -->
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+// Fetch the driver queue from the server
+async function fetchDriverQueue() {
+    try {
+        const response = await fetch("adminDriverQueue.php", {
+            method: 'POST', // Send a POST request
+            headers: {
+                'Content-Type': 'application/json', // Set content type to JSON
+            },
+            body: JSON.stringify({
+                // You can send additional data here if necessary (e.g., session_id or user_id)
+            })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            const queueList = document.getElementById("driverQueue"); // Declare queueList
+            queueList.innerHTML = ''; // Clear existing list before appending new rows
+
+            // Loop through the queue and display each driver
+            data.queue.forEach((driver, index) => {
+                const row = document.createElement("tr");
+                row.setAttribute("data-driver-id", driver.fk_userId); // Set driver ID on the row
+
+                row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>${driver.driver_name}</td>
+                    <td>${driver.dateandtime}</td>
+                    <td>${driver.status}</td>
+                `;
+
+                queueList.appendChild(row); // Append the row to the queue table
+            });
+        } else {
+            console.error("Failed to fetch the driver queue");
+        }
+    } catch (error) {
+        console.error("Error fetching queue:", error);
+    }
+}
+
+// Call the function to fetch the driver queue when the page loads
+fetchDriverQueue();
+
+</script>
+
+<!-- ================ Driver Application ================= -->
+<div class="details">
+    <div class="recentOrders">
+        <div class="cardHeader">
+            <h2>Driver Application</h2>
+            <a href="#" class="btn">View All</a>
+        </div>
+
+        <table id="driverApplicationTable">
+            <thead>
+                <tr>
+                    <th>Driver Name</th>
+                    <th>Address</th>
+                    <th>License Number</th>
+                    <th>Contact Number</th>
+                    <th>Birthdate</th>
+                    <th>License Expiry Date</th>
+                    <th>Vehicle Registration Number</th>
+                    <th>Driver Photo</th>
+                    <th>License Photo</th>
+                    <th>Vehicle Registration Photo</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Data rows will be dynamically inserted here -->
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    // Fetch the driver and vehicle details when the page loads
+    document.addEventListener('DOMContentLoaded', function() {
+        fetchDriverAndVehicleData();
+    });
+
+    function fetchDriverAndVehicleData() {
+        // Get session and user IDs from sessionStorage (Ensure you have correct session management)
+        const sessionId = sessionStorage.getItem('unique_session_id');
+        const userId = sessionStorage.getItem('user_id');
+
+        // Ensure sessionId and userId exist in sessionStorage
+        if (!sessionId || !userId) {
+            console.error('Session ID or User ID is missing');
+            return;
+        }
+
+        // Send sessionId and userId to the server to fetch driver data
+        fetch('getDriverDetails.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ session_id: sessionId, user_id: userId })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                console.log(data); // Log data for debugging
+                const tableBody = document.querySelector('#driverApplicationTable tbody');
+                tableBody.innerHTML = ''; // Clear existing rows
+
+                console.log(data); // Log data for debugging
+                // Check if applications exist and display them
+                if (data.applications && data.applications.length > 0) {
+                    data.applications.forEach(application => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${application.driver_name}</td>
+                            <td>${application.address}</td>
+                            <td>${application.license_number}</td>
+                            <td>${application.contact_number}</td>
+                            <td>${application.birthdate}</td>
+                            <td>${application.license_expiry_date}</td>
+                            <td>${application.vehicle_registration_number}</td>
+                            <td><img src="${application.driverphoto}" alt="Driver Photo" width="50" height="50"></td>
+                            <td><img src="${application.driverlicensephoto}" alt="License Photo" width="50" height="50"></td>
+                            <td><img src="${application.vehicle_registration_photo}" alt="Vehicle Registration Photo" width="50" height="50"></td>
+                            <td>
+                                <button class="actionBtn approveBtn" data-driver-id="${application.driver_id}">Approve</button>
+                                    
+                                <button class="actionBtn declineBtn" data-driver-id="${application.driver_id}">Decline</button>
+                            </td>
+                        `;
+                          
+                        tableBody.appendChild(row);
+                    });
+
+                    
+                    // Attach event listeners to action buttons
+                    document.querySelectorAll('.approveBtn').forEach(button => {
+                        button.addEventListener('click', (event) => handleApplicationAction(event, 'approve'));
+                    });
+
+                    document.querySelectorAll('.declineBtn').forEach(button => {
+                        button.addEventListener('click', (event) => handleApplicationAction(event, 'decline'));
+                    });
+                } else {
+                    // Display a message if no applications are found
+                    const row = document.createElement('tr');
+                    row.innerHTML = '<td colspan="11">No driver applications found.</td>';
+                    tableBody.appendChild(row);
+                }
+            } else {
+                console.error('Error fetching data:', data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching driver and vehicle data:', error);
+        });
+    }
+
+
+
+
+    function handleApplicationAction(event, action) {
+        const driverId = event.target.getAttribute('data-driver-id');
+        
+        if (action === 'approve') {
+            console.log(`Approving driver with ID: ${driverId}`);
+            // Add approval logic here (e.g., call API to update the driver status)
+            updateDriverStatus(driverId, 'approved');
+        } else if (action === 'decline') {
+            console.log(`Declining driver with ID: ${driverId}`);
+            // Add decline logic here (e.g., call API to update the driver status)
+            updateDriverStatus(driverId, 'declined');
+        }
+    }
+
+
+
+
+    function updateDriverStatus(driverId, status) {
+
+        console.log(driverId, status);
+        fetch('getDriverApplicationStatus.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+
+            body: JSON.stringify({ driver_id: driverId, status: status })
+        })
+
+        
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert(`Driver ${status}`);
+                fetchDriverAndVehicleData();  // Reload the driver applications
+            } else {
+                console.error('Failed to update driver status:', data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error updating driver status:', error);
+        });
+    }
+</script>
+
+
+
+        </div>
+
+
+
+        <!-- =========== Scripts =========  -->
+        <script>
+            // add hovered class to selected list item
+            let list = document.querySelectorAll(".navigation li");
+
+            function activeLink() {
+                list.forEach((item) => {
+                    item.classList.remove("hovered");
+                });
+                this.classList.add("hovered");
+            }
+
+            list.forEach((item) => item.addEventListener("mouseover", activeLink));
+
+            // Menu Toggle
+            let toggle = document.querySelector(".toggle");
+            let navigation = document.querySelector(".navigation");
+            let main = document.querySelector(".main");
+
+            toggle.onclick = function () {
+                navigation.classList.toggle("active");
+                main.classList.toggle("active");
+            };
+
+        </script>
+
+        <!-- ====== ionicons ======= -->
+        <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+        <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+</body>
+
+</html>

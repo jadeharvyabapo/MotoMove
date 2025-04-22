@@ -1,0 +1,764 @@
+<html>
+
+<head>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="font-awesome/css/font-awesome.css" />
+
+<style>
+  
+  
+  .highlight {
+    background-color: #f0f8ff; /* Light blue background */
+    font-weight: bold; /* Optionally make the text bold */
+    color: #333; /* Change text color */
+  }
+  .disabled-btn {
+    background-color: #cccccc;
+    color: #666666;
+    cursor: not-allowed;
+  }
+
+
+  /* Modern table styles aligned with cycle-container */
+  #dailyDriverQueue table,  
+  #rideRequestSection table,
+  #rideHistory table {
+    width: 100%;
+    margin-bottom: 20px;
+    border-collapse: separate;
+    border-spacing: 0;
+    background-color: #ffffff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+
+    /* Centered section titles */
+    #dailyDriverQueue h2,
+  #rideRequestSection h2,
+  #rideHistory h2 {
+    text-align: center;
+    font-size: 1.5rem;
+    color: #2c3e50;
+    margin-bottom: 20px;
+  }
+
+  /* Table container to match cycle-container */
+  #dailyDriverQueue,
+  #rideRequestSection,
+  #rideHistory {
+    width: 90%;
+    max-width: 1080px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  #dailyDriverQueue th,
+  #rideRequestSection th,
+  #rideHistory th {
+    color: #2c3e50;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+    letter-spacing: 0.5px;
+    padding: 14px;
+    text-align: left;
+    border-bottom: 2px solid #e0e6ed;
+  }
+
+  #dailyDriverQueue td,
+  #rideRequestSection td,
+  #rideHistory td {
+    padding: 12px 14px;
+    border-bottom: 1px solid #e0e6ed;
+    font-size: 0.95rem;
+  }
+
+  #dailyDriverQueue tr:last-child td,
+  #rideRequestSection tr:last-child td,
+  #rideHistory tr:last-child td {
+    border-bottom: none;
+  }
+
+  #dailyDriverQueue tr:nth-child(even),
+  #rideRequestSection tr:nth-child(even),
+  #rideHistory tr:nth-child(even) {
+    background-color: #f8fafc;
+  }
+
+  #dailyDriverQueue tr:hover,
+  #rideRequestSection tr:hover,
+  #rideHistory tr:hover {
+    background-color: #e3f2fd;
+    transition: background-color 0.3s ease;
+  }
+  
+  /* Highlight style */
+  .highlight {
+    background-color: #97a29f !important;
+    font-weight: 500;
+    color: #08281b;
+  }
+
+  /* Button styles */
+  .accept-btn,
+  .decline-btn {
+    padding: 8px 12px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    font-size: 0.9rem;
+  }
+
+  .accept-btn {
+    background-color: #4CAF50;
+    color: white;
+  }
+
+  .accept-btn:hover {
+    background-color: #45a049;
+  }
+
+  .decline-btn {
+    background-color: #f44336;
+    color: white;
+  }
+
+  .decline-btn:hover {
+    background-color: #d32f2f;
+  }
+
+  .disabled-btn {
+    background-color: #e0e0e0;
+    color: #9e9e9e;
+    cursor: not-allowed;
+  }
+
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .cycle-container.container,
+    #dailyDriverQueue,
+    #rideRequestSection,
+    #rideHistory {
+      width: 95%;
+    }
+  }
+  
+  #profileSummary {
+  margin-top: 5%;
+  background-size: cover;
+  height: 450px;
+  background-position: center;
+  background-repeat: no-repeat;
+  color: white; /* Change text color to ensure visibility */
+  padding: 50px 20px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Add an overlay to improve text readability */
+#profileSummary::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  
+  /* Apply the gradient background */
+  background: linear-gradient(to right, white, rgb(140, 235, 140));
+
+  /* Correct image path - ensure the image exists at this location */
+  
+  /* Ensure the image covers the entire area */
+  background-size: cover; /* Scale image to cover the entire area */
+  
+  /* Center the image */
+  background-position: center; /* Keep the image centered */
+  
+  /* Prevent the image from repeating */
+  background-repeat: no-repeat; /* Make sure the image doesn't repeat */
+  
+  z-index: 1;
+}
+
+#profileSummary > * {
+  position: relative;
+  z-index: 2; /* Ensure content is above the overlay */
+}
+
+#profileSummary .profile-photo {
+  margin-top: 11%;  /* Adjust this value to move the photo lower */
+  border: 3px solid white;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  width: 120px; /* Ensure the profile photo has a fixed size */
+  height: 120px;
+  border-radius: 50%; /* Make the photo circular */
+  object-fit: cover; /* Ensure the image fits well inside the circle */
+}
+
+
+#profileSummary h1,
+#profileSummary p {
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+#welcomeMessage {
+    font-size: 1.8rem;
+    color: #2E7D32; /* Darker green for better contrast */
+    background-color: #ffffff;
+    margin-bottom: 0.5rem;
+  }
+
+  #status {
+    font-size: 1rem;
+    color: #FF9800; /* Orange color for status */
+    font-weight: bold;
+    
+  }
+#driveNowBtn {
+    background-color: #ffffff;
+    color: #4CAF50;
+    border: 2px solid #4CAF50;
+    padding: 12px 24px;
+    border-radius: 25px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s;
+    position: absolute;
+    bottom: -px;
+    left: 50%;
+    transform: translateX(-50%);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+
+  #driveNowBtn:hover {
+    background-color: #4CAF50;
+    color: white;
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+  }
+
+
+
+</style>
+
+</head>
+
+<body>
+  <header>
+    <div class="nav container">
+      <i class="fa fa-menu" id="menu-icon"></i>
+      <a href="#" class="logo">
+        <img src="image/logo.png" alt="MotoMove Logo">
+        Moto<span>Move</span>
+    </a>
+    
+      <ul class="navbar">
+        <li><a href="dashboarddriver.html" class="active">Profile</a></li>
+        <li><a href="#dailyDriverQueue">QUEUE</a></li>
+        <li><a href="#rideRequestSection">Request</a></li>
+
+        <li><a href=".html">Log-Out</a></li>
+      </ul>
+    </div>
+  </header>
+  <!--end header-->
+
+  <div class="profile"></div>
+
+  <section id="profileSummary">
+    <img id="profilePhoto" alt="Profile Photo" class="profile-photo" />
+    <h1 id="welcomeMessage">Welcome, Driver</h1>
+    <p>Status: <span id="status">Online</span></p>
+    <button id="driveNowBtn">Drive Now</button>
+  </section>
+  
+
+  
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Fetch driver information
+    fetchDriverInfo();
+
+    // Add event listener for the Drive Now button
+  });
+  async function fetchDriverInfo() {
+    try {
+        // Retrieve the user ID from sessionStorage
+        const userId = sessionStorage.getItem('user_id');
+
+        // Make a fetch request to get the driver profile
+        const response = await fetch(`getDriverprofile.php?user_id=${userId}`);
+
+        // Ensure the response is in JSON format
+        const data = await response.json();
+
+        // Log the received data for debugging purposes
+
+        // Check if the response indicates success
+        if (data.success) {
+
+
+
+            // Update profile photo if available, otherwise use a default image
+            if (data.driverphoto) {
+
+              console.log(data.driverphoto);
+
+                document.getElementById('profilePhoto').src = data.driverphoto; 
+            } else {
+                document.getElementById('profilePhoto').src = 'default-profile-photo.jpg';
+            }
+            // You can also update other fields (e.g., welcome message) here
+            document.getElementById('welcomeMessage').textContent = `Welcome ${data.driverName}`;
+            
+        } else {
+            console.error('Failed to fetch driver information');
+        }
+
+    } catch (error) {
+        // Catch any errors during the fetch process
+        console.error('Error fetching driver information:', error);
+    }
+}
+
+
+  </script>
+
+
+
+
+  <!-- Daily Driver Queue -->
+  <section id="dailyDriverQueue">
+    <h2>Daily Driver Queue</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Order</th>
+          <th>Driver Name</th>
+          <th>Date and Time</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody id="driverQueue">
+        <!-- Rows will be added here -->
+      </tbody>
+    </table>
+
+    <script>
+      document
+        .getElementById("driveNowBtn")
+        .addEventListener("click", async function () {
+          try {
+                               document.getElementById('status').textContent = 'waiting';
+
+            // Get driver details (for example, from session or logged-in user)
+
+            const sessionId = sessionStorage.getItem('unique_session_id');
+            const userId = sessionStorage.getItem('user_id');
+            console.log('Session ID for this tab:', sessionId);
+
+            const driverName = "John Doe"; // Replace with actual driver name from session
+            const driverId = 1; // Replace with actual driver ID
+
+            const response = await fetch("addToQueue.php", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                session_id: sessionId,  // Send session_id in request body
+                user_id: userId,
+                driver_id: driverId,
+                driver_name: driverName,
+              }),
+            });
+
+            if (response.ok) {
+
+              fetchDriverQueue();
+
+              const data = await response.json();        
+                   console.log(data);
+                   document.getElementById('status').textContent = 'waiting';
+
+
+
+
+
+              // Check if the response contains a message and alert it
+              alert(data.message);
+              // Refresh the queue
+            } else {
+              console.error("Failed to add driver to the queue");
+              document.getElementById('status').textContent = 'waiting';
+
+            }
+          } catch (error) {
+            console.error("Error:", error);
+          }
+        });
+
+
+
+      // Function to fetch the driver queue and display it
+  async function fetchDriverQueue() {
+    try {
+      const sessionId = sessionStorage.getItem('unique_session_id');
+      const userId = sessionStorage.getItem('user_id');
+      console.log('User ID:', userId);
+
+      const response = await fetch("getDriverQueue.php", {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          session_id: sessionId,
+          user_id: userId,
+        })
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+
+        console.log(data);
+        const queueList = document.getElementById("driverQueue");
+        queueList.innerHTML = '';
+
+        data.queue.forEach((driver, index) => {
+          const row = document.createElement("tr");
+          row.setAttribute("data-driver-id", driver.fk_userId);
+
+
+
+          console.log(driver.fk_userId, userId)
+;
+
+
+if (driver.fk_userId == userId) {
+    row.classList.add("highlight");  // Add the class to highlight the row
+    console.log('Highlighting row for driver:', driver.driver_name); // Check if the row is being highlighted
+}
+
+
+          row.innerHTML = `
+            <td>${index + 1}</td>
+            <td>${driver.driver_name}</td>
+            <td>${driver.dateandtime}</td>
+            <td>${driver.status}</td>
+          `;
+
+          queueList.appendChild(row);
+        });
+      } else {
+        console.error("Failed to fetch the driver queue");
+      }
+    } catch (error) {
+      console.error("Error fetching queue:", error);
+    }
+  }
+
+  // Fetch the driver queue when the page loads
+  window.addEventListener("load", fetchDriverQueue);
+
+  // Refresh the queue every 30 seconds
+  setInterval(fetchDriverQueue, 30000);
+</script>
+
+
+
+
+
+
+
+
+
+    <!-- JavaScript Code -->
+  </section>
+
+ <!-- Ride Request Table -->
+<section id="rideRequestSection">
+  <h2>Ride Requests</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Full Name</th>
+        <th>Pick-up Point</th>
+        <th>Destination</th>
+        <th>Contact Number</th>
+        <th>No. of Passengers</th>
+        <th>Payment Method</th>
+        <th>Pick-up Time</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody id="rideRequestTable">
+      <!-- Rows for ride requests will be added here dynamically -->
+    </tbody>
+  </table>
+
+  <script>
+    async function fetchRideRequests() {
+      try {
+        const response = await fetch("getRiderRequest.php");
+        const data = await response.json();
+
+        console.log("your data", data);
+
+        if (data.success) {
+          const rideList = document.getElementById("rideRequestTable");
+          rideList.innerHTML = ""; // Clear existing content
+
+          // Loop through ride requests and display them
+          data.rideRequests.forEach((request, index) => {
+            if (request.status === "accepted") {
+              return; // Skip rendering the row for accepted requests
+            }
+
+            const row = document.createElement("tr");
+
+            const isFirstRequest = index === 0;
+            const buttonClass = isFirstRequest ? "" : "disabled-btn";
+            const buttonDisabled = isFirstRequest ? "" : "disabled";
+
+            row.innerHTML = `
+              <td>${request.passenger_name}</td>
+              <td>${request.pickupPoint}</td>
+              <td>${request.destination}</td>
+              <td>${request.contactNumber}</td>
+              <td>${request.numberofPassenger}</td>
+              <td>${"Personal Payment"}</td>
+              <td>${request.timeofPickUp}</td>
+              <td>
+                <button class="accept-btn ${buttonClass}" data-id="${request.riderbookingID}" onclick="handleAction(this, 'accept')" ${buttonDisabled}>Accept</button>
+                <button class="decline-btn ${buttonClass}" data-id="${request.riderbookingID}" onclick="handleAction(this, 'decline')" ${buttonDisabled}>Decline</button>
+              </td>
+            `;
+
+            rideList.appendChild(row);
+          });
+        } else {
+          console.error("Failed to fetch ride requests");
+        }
+      } catch (error) {
+        console.error("Error fetching ride requests:", error);
+      }
+    }
+
+    // Call the function on page load
+    window.addEventListener("load", fetchRideRequests);
+
+    async function handleAction(button, action) {
+      const ridebookingId = button.getAttribute("data-id");
+      const sessionId = sessionStorage.getItem('unique_session_id');
+      const userId = sessionStorage.getItem('user_id');
+      console.log('Session ID for this tab:', sessionId);
+
+      const driverId = userId;
+      const response = await fetch("handleRideRequest.php", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        body: `action=${action}&ridebookingID=${ridebookingId}&session_id=${sessionId}&user_id=${userId}`,
+      });
+
+      const data = await response.json();
+      alert(data.message);
+      console.log(data.message);
+
+      if (data.success) {
+        const rideRequestRow = button.closest("tr");
+
+        if (action === "accept") {
+          sessionStorage.setItem('riderbookingIdtrue', ridebookingId);
+
+          if (rideRequestRow) {
+            rideRequestRow.remove();
+          }
+
+          // Remove the driver from the driver queue
+          const driverQueue = document.getElementById("driverQueue");
+          const driverRow = driverQueue.querySelector(`tr[data-driver-id="${driverId}"]`);
+          if (driverRow) {
+            driverRow.remove();
+          }
+
+          window.location.href = "driverRideCompletion.html";
+        } else if (action === "decline") {
+          // Remove the declined ride request row
+          rideRequestRow.remove();
+
+          // Enable the next row's buttons
+          const nextRow = rideRequestRow.nextElementSibling;
+          if (nextRow) {
+            const nextButtons = nextRow.querySelectorAll('button');
+            nextButtons.forEach(btn => {
+              btn.classList.remove('disabled-btn');
+              btn.removeAttribute('disabled');
+            });
+          }
+        }
+
+        // Refresh the ride requests
+        fetchRideRequests();
+      } else {
+        console.log(
+          "Failed to update the ride status or remove the driver from the queue.",
+          sessionStorage.getItem('rbId')
+        );
+      }
+    }
+  </script>
+</section>
+
+  <!-- End Ride Request Table -->
+
+
+        <!--end home-->
+        <section class="cycle" id="cycle">
+          <div class="heading">
+          <span>What Can We Offer?</span> 
+          <h2>Driver's Etiquettes
+          </h2>
+          <p></p>
+      </div>
+      <!--Drive Safely
+Be Courteous
+Respect Privacy
+Keep Clean
+Be Punctual
+Stay Calm-->
+
+
+      <div class="cycle-container container">
+          <div class="box">
+              <img src="image/service1.jpg" alt="">
+              <h2>Drive Safely
+              </h2>
+          </div>
+          <div class="box">
+              <img src="image/service3.jpg" alt="">
+              <h2>Be Courteous</h2>
+          </div>
+          <div class="box">
+              <img src="image/service2.jpg" alt="">
+              <h2>Be Punctual</h2>
+          </div>
+          <div class="box">
+              <img src="image/service4.jpg" alt="">
+              <h2>Stay Calm </h2>
+          </div>
+          <div class="box">
+              <img src="image/service 5.jpg" alt="">
+              <h2>Respect Privacy</h2>
+          </div>
+          <div class="box">
+              <img src="image/service6.jpg" alt="">
+              <h2>Keep Clean</h2>
+          </div>
+      </div>
+  </section>
+  <!--end cycle-->
+  <section class="about container" id="about">
+      <div class="about-img">
+          <img src="image/aboutpic.jpg" alt="">
+      </div>
+      <div class="about-text">
+          <span>About Us</span>
+          <p>We are a team of passionate and dedicated individuals who believe in redefining transportation to better serve our community and the environment. Our commitment lies in offering a safe, reliable, and eco-friendl
+              y transportation solution that meets the needs of modern commuters.  </p>
+          <br>
+          <a href="#" class="btn disabled">Be One of Our Good Drivers</a>
+        </div>
+  </section>
+  <!--end About-->
+
+  
+  <section class="blog" id="blog">
+      <div class="heading">
+          <span>Our Blog</span>
+          <h2>Rider's Feedback</h2>
+          <p>
+              Our Blog
+              Stay updated with the latest trends, tips, and stories in sustainable transportation. 
+              <br>
+              Explore how we are making commuting safer, greener, and more convenient for everyone.</br> </p>
+      </div>
+      <div class="blog-container container">
+          <div class="box">
+              <img src="image/testimonal1.jpg" alt="">
+              <span>July 4 2022</span>
+              <p>"Every ride feels safe and comfortable, it's my go-to commuting choice!"</p>
+              <a href="#" class="blog-btn">Read More<i class="fa fa-long-arrow-right"></i></a>
+          </div>
+          <div class="box">
+              <img src="image/testimonal2.jpg" alt="">
+              <span>Jun 5 2022</span>
+              <p>"Affordable, convenient, and stress-free highly recommended!"</p>
+              <a href="#" class="blog-btn">Read More<i class="fa fa-long-arrow-right"></i></a>
+          </div>
+          <div class="box">
+              <img src="image/testimonal3.jpg" alt="">
+              <span>Janruary 21 2022</span>
+              <p>"The drivers are professional, and the rides are smooth and timely."
+              </p>
+              <a href="#" class="blog-btn">Read More<i class="fa fa-long-arrow-right"></i></a>
+          </div>
+      </div>
+  </section>
+  <!--end blog-->
+  <section class="map">
+
+          <div class="heading">
+              <span>Guide Map </span>
+              <h3>
+                  Navigate your journey with ease, your path starts here.</h3>
+      <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3926.7684812140786!2d123.5407947!3d10.131428!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x33a9623bf0485431%3A0xbcf0a3541b0d909!2sCebu%20Technological%20University%20-%20Barili%20Campus!5e0!3m2!1sen!2sph!4v1646842456284!5m2!1sen!2sph" width="100%" height="450" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+  </section> 
+  <section class="footer">
+      <div class="footer-container container">
+          <div class="footer-box">
+              <a href="#" class="logo">Moto<span>Move</span></a>
+              <div class="social">
+                  <a href="#"><i class="fa fa-facebook"></i></a>
+                  <a href="#"><i class="fa fa-instagram"></i></a>
+                  <a href="#"><i class="fa fa-linkedin"></i></a>
+                  <a href="#"><i class="fa fa-telegram"></i></a>
+              </div>
+          </div>
+          <div class="footer-box">
+              <h3>Quick Links</h3>
+              <a href="#">Home</a>
+              <a href="#">Cycles</a>
+              <a href="#">Parts</a>
+              <a href="#">Blog</a>
+          </div>
+          <div class="footer-box">
+              <h3>Legal</h3>
+              <a href="#">Privacy</a>
+              <a href="#">Refund Policy</a>
+              <a href="#">Cookie Policy</a>
+          </div>
+          <div class="footer-box">
+              <h3>Contact</h3>
+              <p>Afghanistan</p>
+              <p>India</p>
+              <p>United States</p>
+          </div>
+      </div>
+  </section>
+
+  <!--end footer-->
+  <div class="copyright">
+      <p>&#169; MotoMove All Right Reserved</p>
+  </div>
+</body>
+</html>

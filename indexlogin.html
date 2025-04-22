@@ -1,0 +1,166 @@
+<html>
+    <head>
+        <link rel="stylesheet" href="css/indexlogin.css">
+        <link rel="stylesheet" href="font-awesome/css/font-awesome.css">
+        <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+
+        
+    </head>
+    <body>
+        <header>
+            <div class="nav container">
+                <i class="fa fa-menu" id="menu-icon"></i>
+                <a href="#" class="logo">Moto<span>Move</span></a>
+                <ul class="navbar">
+                    <li><a href="#" class="active">Home</a></li>
+                    <li><a href="#">Ride</a></li>
+                    <li><a href="#">Drive</a></li>
+                    <li><a href="#">Admin</a></li>
+                    <li><a href="#">Services</a></li>
+                </ul>
+            </div>  
+        </header>
+        <!--end header-->
+        <section class="home">
+            <div class="home-text">
+                
+    <!--
+    - MODAL
+  -->
+
+  <div class="modal" data-modal>
+
+    <div class="container1" id="container">
+        <div class="form-container sign-up">
+            <form id="signupForm">                
+                <h1>Create Account</h1>
+                <div class="social-icons">
+                    <!-- Social icons can be added here if needed -->
+                </div>
+    
+                <input type="text" placeholder="Full Name" id="fullname" required name="fullname">
+    
+                <input type="email" placeholder="Email" id="signupUsername" required name="email">
+            
+                <input type="password" placeholder="Password" id="signupPassword1" required name="password">
+    
+                <input type="password" placeholder="Confirm Password" id="signupPassword2" required name="password">
+    
+                <span>Sign Up as </span>
+                <select id="signupselect" required>
+                    <option value="Rider">Rider</option>
+                    <option value="Driver">Driver</option>
+                    <option value="Admin">Admin</option>
+                </select>
+    
+                <button type="submit">Sign Up</button>
+            </form>
+        </div>
+    
+      <div class="form-container sign-in">
+        <form id="signInForm">
+            <h1>Sign In</h1>
+
+            
+
+            <div class="social-icons">
+                <a href="#" class="icon">
+                    <ion-icon name="logo-facebook"></ion-icon>
+                </a>
+                <a href="#" class="icon">
+                    <ion-icon name="logo-instagram"></ion-icon>
+                </a>
+                <a href="#" class="icon">
+                    <ion-icon name="logo-google"></ion-icon>                </a>
+            </div>
+            
+              <span>or use your email password</span>
+              
+              <input type="email" placeholder="Email" id="loginUsername" />
+              <input type="password" placeholder="Password" id="loginPassword"/>
+
+             <span3>Sign In as</span3>
+             <select id="loginselect">
+                <option value="rider">Rider</option>
+                <option value="driver">Driver</option>
+                <option value="admin">Admin</option>
+            </select>
+
+
+              <a >Forget Your Password?</a>
+              <button type="submit">Login</button>
+              
+             
+
+            </form> 
+      </div>
+      <div class="toggle-container">
+          <div class="toggle">
+              <div class="toggle-panel toggle-left">
+                  <h1>Welcome!</h1>
+                  <p>Already have an account? </p>
+                  <button class="hidden" id="login">Sign In</button>
+                  
+
+              </div>
+              <div class="toggle-panel toggle-right">
+
+                  <h1>Welcome!</h1>
+                  <p>Don't have an account yet?</p>
+                  
+                  <button class="hidden" id="register">Sign Up</button>
+              </div>
+          </div>
+      </div>
+  </div>
+
+    </div>
+
+
+</div>
+
+
+            </div>
+        </section>
+       
+        <section class="footer">
+            <div class="footer-container container">
+                <div class="footer-box">
+                    <a href="#" class="logo">Moto<span>Move</span></a>
+                    <div class="social">
+                        <a href="#"><i class="fa fa-facebook"></i></a>
+                        <a href="#"><i class="fa fa-instagram"></i></a>
+                        <a href="#"><i class="fa fa-linkedin"></i></a>
+                        <a href="#"><i class="fa fa-telegram"></i></a>
+                    </div>
+                </div>
+                <div class="footer-box">
+                    <h3>Quick Links</h3>
+                    <a href="#">Home</a>
+                    <a href="#">Cycles</a>
+                    <a href="#">Parts</a>
+                    <a href="#">Blog</a>
+                </div>
+                <div class="footer-box">
+                    <h3>Legal</h3>
+                    <a href="#">Privacy</a>
+                    <a href="#">Refund Policy</a>
+                    <a href="#">Cookie Policy</a>
+                </div>
+                <div class="footer-box">
+                    <h3>Contact</h3>
+                    <p>Afghanistan</p>
+                    <p>India</p>
+                    <p>United States</p>
+                </div>
+            </div>
+        </section>
+        <!--end footer-->
+        <div class="copyright">
+            <p>&#169; MotoMove All Right Reserved</p>
+        </div>
+
+        <script src="ridescript.js">     </script>
+   </body>
+</html>

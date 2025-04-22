@@ -1,0 +1,636 @@
+<html>
+
+<head>
+    <link rel="stylesheet" href="css/ride.css">
+    <link rel="stylesheet" href="font-awesome/css/font-awesome.css">
+</head>
+
+<body>
+    <header>
+        <div class="nav container">
+            <i class="fa fa-menu" id="menu-icon"></i>
+            <a href="index.html" class="logo">Moto<span>Move</span></a>
+            <ul class="navbar">
+                <li><a href="index.html" class="active">Home</a></li>
+                <li><a href="">Ride</a></li>
+                <li><a href="">Booking</a></li>
+                <li><a href="#cycle">Log-Out</a></li>
+
+
+
+            </ul>
+        </div>
+    </header>
+    <!--end header-->
+
+    <h1>
+        <div class="modal" data-modal>
+
+            <div class="ck-container">
+                <div class="container2">
+                    <form action="">
+                        <h1>Booking Status: <span id="bookingStatus">Pending</span></h1>
+
+                        <script>   document.getElementById('bookingStatus').style.color = 'red';
+                        </script>
+
+
+                        <div class="row">
+
+                            <div class="col">
+
+
+                                <h3 class="title" id="textNote">Please double-check your inputs to ensure accuracy and avoid any
+                                    confusion. Thank you! </h3>
+
+                                <div class="inputBox">
+                                    <span>full name :</span>
+                                    <input type="text" id="fullName" placeholder="Jade Harvy Abapo" readonly>
+                                </div>
+                                <div class="inputBox">
+                                    <span> Pick-up Point</Address> :</span>
+                                    <input type="text" id="pickupLocation" placeholder="CTU Barili Campus" readonly>
+                                </div>
+                                <div class="inputBox">
+                                    <span>Destination :</span>
+                                    <input type="text" id="dropoffLocation" placeholder="Cagay, Barili" readonly>
+                                </div>
+
+                                <div class="inputBox">
+                                    <span>Contact Number :</span>
+                                    <input type="number" id="contactNumber" placeholder="09665738045" readonly>
+                                </div>
+
+                                <div class="flex">
+
+
+                                </div>
+
+                            </div>
+
+                            <div class="col">
+
+                                <h3 class="title" id="textnote2"> |Note: Once your booking is accepted by the driver, |you will no
+                                    longer be able to cancel or edit it</h3>
+
+
+                                <div class="colspace">
+                                    <div class="inputBox">
+                                        <span id="textbookingtype">booking type :</span>
+                                        <select id="bookingTypeSelect" disabled>
+                                            <option value="Advance Booking">Advance Booking</option>
+                                            <option value="On-Time Booking">On-Time Booking</option>
+
+                                        </select>
+                                    </div>
+
+
+
+                                    <div class="inputBox">
+                                        <div class="paymentimg">
+                                            <span>Time of Pick-up :</span>
+                                            <input type="time" id="pickup-time" name="timeField" value="12:00" readonly>
+                                        </div>
+                                    </div>
+
+                                
+                                    <div class="inputBox">
+                                        <span>No. passengers :</span>
+                                        <input type="number" id="passengerCount" placeholder="1" min="1" max="2">
+                                    </div>
+                                    
+                                    <script>
+                                    document.getElementById('passengerCount').addEventListener('input', function() {
+                                        let value = this.value;
+                                        
+                                        // Allow only "1" or "2" as valid input
+                                        if (value !== '1' && value !== '2') {
+                                            this.value = ''; // Clear the input if it's not "1" or "2"
+                                        }
+                                    });
+
+                                </script>
+
+
+                                    <div class="inputBox">
+                                        <span>Payment Method :</span>
+                                        <select id="select" disabled>
+                                            <option value="personal" selected>Personal Payment</option>
+                                            <option value="gcash" disabled>GCash</option>
+                                            <option value="creditCard" disabled>Credit Card</option>
+                                        </select>
+                                    </div>
+                                    <div class="flex">
+
+
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <button class="btn-submit" id="cancelbutton">Cancel Booking</button>
+
+                        <button class="btn-submit" id="editSaveButton">Edit Booking</button>
+
+                        <script>
+
+
+document.addEventListener('DOMContentLoaded', function() {
+    const cancelButton = document.getElementById('cancelbutton');
+    if (cancelButton) {
+        cancelButton.addEventListener('click', handleCancelBooking);
+    } else {
+        console.error('Cancel button not found');
+    }
+});
+
+function handleCancelBooking(event) {
+    // Prevent the default action (which might be causing the refresh)
+    event.preventDefault();
+
+    // Prompt the user for confirmation
+    if (confirm('Do you really want to cancel your ride?')) {
+        const bookingId = sessionStorage.getItem('bookingId');
+        const sessionId = sessionStorage.getItem('unique_session_id');
+        const userId = sessionStorage.getItem('user_id');
+
+        if (!bookingId) {
+            console.error('Booking ID not found. Unable to cancel.');
+            return;
+        }
+
+        // Send a request to cancel the booking
+        fetch('cancelBooking.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ 
+                bookingId: bookingId,
+                sessionId: sessionId,
+                userId: userId
+            }),
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                console.log('Booking cancelled successfully');
+                alert('Booking cancelled successfully');
+                // Redirect to index.html
+                window.location.href = 'index.html';
+            } else {
+                console.error('Failed to cancel booking:', data.message);
+                alert('Failed to cancel booking: ' + data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred while cancelling the booking');
+        });
+    }
+}
+
+
+                            
+
+
+
+
+                            //this is for edit
+
+                            // Grab the "Edit" button element
+                            // Grab the "Edit" button element
+                            const editSaveButton = document.getElementById('editSaveButton');
+
+                            // Function to toggle readonly/disabled state
+                            const toggleEditableState = (isEditing) => {
+                                // Input fields to toggle readonly attribute
+                                ['pickupLocation', 'dropoffLocation', 'contactNumber', 'pickup-time', 'passengerCount'].forEach(id => {
+                                    const el = document.getElementById(id);
+                                    if (isEditing) {
+                                        el.removeAttribute('readonly'); // Make input editable
+                                    } else {
+                                        el.setAttribute('readonly', true); // Make input readonly
+                                    }
+                                });
+
+                                // Select fields to toggle disabled attribute
+                                ['bookingTypeSelect'].forEach(id => {
+                                    const select = document.getElementById(id);
+                                    if (isEditing) {
+                                        select.removeAttribute('disabled'); // Enable select elements
+                                    } else {
+                                        select.setAttribute('disabled', true); // Disable select elements
+                                    }
+                                });
+                            };
+
+                            // Add event listener for the "Edit" button
+                            editSaveButton.addEventListener('click', (event) => {
+                                // Prevent page scroll and form submission
+                                event.preventDefault();
+
+                                const isEditing = editSaveButton.textContent === 'Edit Booking';
+
+                                // Toggle the input fields and select elements between editable and readonly/disabled
+                                toggleEditableState(isEditing);
+
+                                // Change the button text between "Edit Booking" and "Save Booking"
+                                editSaveButton.textContent = isEditing ? 'Save Booking' : 'Edit Booking';
+
+                                // When saving, you can send the data to the server
+                                if (!isEditing) {
+
+                                    console.log(sessionStorage);
+                                    const sessionId = sessionStorage.getItem('unique_session_id');
+                                    const userId = sessionStorage.getItem('user_id');
+                                    const bookingId = sessionStorage.getItem('bookingId');
+                                    console.log(bookingId);
+
+                                    console.log('Session ID for this tab:', sessionId);
+
+                                    // Log each input value separately
+                                    console.log('Full Name:', document.getElementById('fullName').value);
+                                    console.log('Pickup Location:', document.getElementById('pickupLocation').value);
+                                    console.log('Dropoff Location:', document.getElementById('dropoffLocation').value);
+                                    console.log('Contact Number:', document.getElementById('contactNumber').value);
+                                    console.log('Booking Type:', document.getElementById('bookingTypeSelect').value);
+                                    console.log('Pickup Time:', document.getElementById('pickup-time').value);
+                                    console.log('Passenger Count:', document.getElementById('passengerCount').value);
+
+                                    const data = {
+                                        booking_id: bookingId,
+                                        session_id: sessionId,
+                                        user_id: userId,
+                                        fullname: document.getElementById('fullName').value,
+                                        pickupPoint: document.getElementById('pickupLocation').value,
+                                        destination: document.getElementById('dropoffLocation').value,
+                                        contactNumber: document.getElementById('contactNumber').value,
+                                        bookingType: document.getElementById('bookingTypeSelect').value,
+                                        timeofPickUp: document.getElementById('pickup-time').value,
+                                        numberofPassenger: document.getElementById('passengerCount').value
+                                    };
+
+                                    console.log('Data object:', data);
+
+                                    fetch('editbooking.php', {
+                                        method: 'POST',
+                                        headers: { 'Content-Type': 'application/json' },
+                                        body: JSON.stringify(data)
+                                    })
+                                        .then(response => response.json())
+                                        .then(data => {
+                                            if (data.success) {
+                                                alert('Booking updated successfully');
+                                                console.log('Server response:', data);
+                                            } else {
+                                                alert('Failed to update booking');
+                                                console.log('Server error response:', data);
+                                            }
+                                        })
+                                        .catch(error => {
+                                            alert('Error: ' + error);
+                                            console.error('Fetch error:', error);
+                                        });
+                                }
+                            });
+
+
+                            // Initial population of input fields (this is just an example)
+                            const data = {
+                                fullname: "John Doe",
+                                pickupPoint: "Location A",
+                                destination: "Location B",
+                                contactNumber: "123456789",
+                                bookingType: "Advance Booking",
+                                timeofPickUp: "12:00",
+                                numberofPassenger: 2
+                            };
+
+                            document.getElementById('fullName').value = data.fullname;
+                            document.getElementById('pickupLocation').value = data.pickupPoint;
+                            document.getElementById('dropoffLocation').value = data.destination;
+                            document.getElementById('contactNumber').value = data.contactNumber;
+                            document.getElementById('bookingTypeSelect').value = data.bookingType;
+                            document.getElementById('pickup-time').value = data.timeofPickUp;
+                            document.getElementById('passengerCount').value = data.numberofPassenger;
+
+
+                            
+
+
+                        </script>
+
+
+
+                        <script>
+
+
+
+
+
+
+                            
+
+                            const sessionId = sessionStorage.getItem('unique_session_id');
+                            const userId = sessionStorage.getItem('user_id');
+                        
+
+
+                            fetch("getBookingStatus.php", {
+                                method: 'POST',  // POST method because you're sending data to the server
+                                headers: {
+                                    'Content-Type': 'application/json'  // Specify JSON content
+                                },
+                                body: JSON.stringify({
+                                    session_id: sessionId,  // Send session_id in request body
+                                    user_id: userId,
+
+                                           // Send user_id in request body
+                                })
+                            })
+                                .then(response => response.json())
+                                .then(data => {
+
+
+                                    console.log(data);
+                                    sessionStorage.setItem('bookingId', data.data.riderbookingID);
+                                   
+                                     
+                                   
+
+
+                                    if (data.success) {
+                                        // Ensure that the data object contains the necessary fields
+                                        document.getElementById('fullName').value = data.data.rider_fullname; // Populate the full name
+                                        document.getElementById('pickupLocation').value = data.data.pickupPoint; // Populate the pickup location
+                                        document.getElementById('dropoffLocation').value = data.data.destination; // Populate the dropoff location
+                                        document.getElementById('contactNumber').value = data.data.contactNumber; // Populate the contact number
+                                        document.getElementById('select').value = data.data.bookingType; // Populate the booking type
+                                        document.getElementById('pickup-time').value = data.data.timeofPickUp; // Populate the pickup time
+                                        document.getElementById('passengerCount').value = data.data.numberofPassenger; // Populate the passenger count
+                                        
+
+
+                                    
+                                        if (data.data.status === 'accepted') {
+                                            document.getElementById('bookingStatus').style.color = 'green'; // Set the color to green
+                                            document.getElementById('bookingStatus').textContent = 'Accepted';
+                                            document.getElementById('editSaveButton').disabled = true;
+                                            document.getElementById('cancelbutton').disabled = true;
+
+                                            textnopassenger
+
+                                            document.getElementById('editSaveButton').style.color = 'gray';
+                                            document.getElementById('cancelbutton').style.color = 'gray';
+
+                                            document.getElementById('textbookingtype').textContent = 'Driver Name';
+                                            
+                                            document.getElementById('textNote').textContent = 'Your driver is on the way and will reach your location in approximately 10 minute.';
+                                            
+                                            document.getElementById('textnote2').textContent = "If your driver exceeds the expected arrival time, you can report the issue after the ride."
+
+
+
+;
+
+                                            const driverName = data.data.driver_fullname; // Replace this with actual driver name from data
+
+                                            
+                                            // Update the "booking type" text to show the driver's name
+                                            const bookingTypeSelect = document.getElementById('bookingTypeSelect');
+
+                                            // Set the "booking type" to the driver's name
+                                            bookingTypeSelect.innerHTML = `<option value="${driverName}">${driverName}</option>`;
+
+                                            // Optionally, disable the select box if you don't want users to change it
+                                            bookingTypeSelect.disabled = false;
+
+
+
+
+                                            console.log(data.data.riderbookingID);
+                                        
+
+                                            // Change the text to "Accepted"
+                                        }
+
+                                        
+
+                                        else if (data.data.status === 'completed') {
+                                            document.getElementById('bookingStatus').style.color = 'green'; // Set the color to green
+                                            document.getElementById('bookingStatus').textContent = 'completed';
+
+
+                                            setTimeout(function () {
+                                                window.location.href = 'riderRideCompletion.html';
+                                                // Redirect to the desired page
+                                            }, 1000);
+                                            // Change the text to "Accepted"
+                                        } else if (data.data.status === 'declined') {
+
+
+
+                                            bookingId = sessionStorage.getItem('bookingId');
+                                            
+                                            // If the status is declined
+                                            document.getElementById('bookingStatus').style.color = 'red'; // Change the color to red for declined
+                                            document.getElementById('bookingStatus').textContent = 'declined'; // Change the text to "Declined"
+
+                                            
+    // Prompt the user
+                                        
+
+
+   const userResponse = confirm("Your request has been declined. Do you want to book and wait for another driver?");
+
+
+
+    if (userResponse) {
+        // User wants to book again
+        const reBookData = {
+            riderbookingID: bookingId,
+            session_id: sessionId,
+            user_id: userId,
+            fullname: document.getElementById('fullName').value,
+            pickupPoint: document.getElementById('pickupLocation').value,
+            destination: document.getElementById('dropoffLocation').value,
+            contactNumber: document.getElementById('contactNumber').value,
+            bookingType: document.getElementById('bookingTypeSelect').value,
+            timeofPickUp: document.getElementById('pickup-time').value,
+            numberofPassenger: document.getElementById('passengerCount').value
+        };
+
+        console.log(reBookData) ;
+
+        // Send request to re-book
+        fetch('reBookRide.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(reBookData)
+        })
+        .then(response => response.json())
+        .then(result => {
+            if (result.success) {
+
+                alert('Your booking has been re-submitted. Please wait for a driver.');
+                document.getElementById('bookingStatus').textContent = 'Pending';
+                document.getElementById('bookingStatus').style.color = 'orange';
+                let bookingId = sessionStorage.getItem('bookingId');
+                if (bookingId) {
+        bookingId = parseInt(bookingId) + 1;
+        // Save the updated bookingId back to sessionStorage
+        sessionStorage.setItem('bookingId', bookingId);
+        console.log(bookingId);
+    } else {
+        // If there's no bookingId, initialize it
+        sessionStorage.setItem('bookingId', 1);
+    }
+
+
+            } else {
+                alert('Failed to re-submit booking. Please try again.');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred. Please try again.');
+        });
+    } else {
+        window.location.href = 'index.html';
+    }
+
+
+
+
+                                        } else {
+                                            // If the status is something else, you can handle it accordingly
+                                            document.getElementById('bookingStatus').style.color = 'orange';
+                                            document.getElementById('bookingStatus').textContent = 'Pending'; // Example for pending status
+                                        }
+                                        // Check if the full name is available in the user object
+                                        if (data.data.fullname) {
+                                            console.log(data.data);
+
+                                        } else {
+                                            console.log("Full name is not available");
+                                        }
+
+
+                                    } else {
+                                        console.log(data.message || "Error: No data received");
+                                    }
+                                })
+                                .catch(error => console.error('Error:', error));
+
+
+
+                        </script>
+
+
+                        <script>
+
+                            document.getElementById('bookingTypeSelect').addEventListener('change', function () {
+                                const pickupTimeInput = document.getElementById('pickup-time'); // Ensure you get the input element
+                                if (this.value === 'On-Time Booking') {
+                                    const now = new Date();
+                                    now.setMinutes(now.getMinutes() + 10); // Add 10 minutes
+                                    const hours = String(now.getHours()).padStart(2, '0');
+                                    const minutes = String(now.getMinutes()).padStart(2, '0');
+                                    const formattedTime = `${hours}:${minutes}`;
+                                    pickupTimeInput.value = formattedTime; // Set the time
+                                    pickupTimeInput.setAttribute('readonly', true); // Make it uneditable
+                                } else {
+                                    pickupTimeInput.value = ''; // Clear if not on-time booking
+                                    pickupTimeInput.removeAttribute('readonly'); // Make it editable again
+                                }
+                            });
+
+
+
+                        </script>
+
+
+
+
+
+                    </form>
+
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+
+        </header>
+
+
+    </h1>
+
+
+
+
+    <!--end home-->
+
+    <!--end cycle-->
+
+    <!--end About-->
+
+    <!--end parts-->
+
+
+    <!--end blog-->
+
+
+    <section class="map">
+        <iframe
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3926.7684812140786!2d123.5407947!3d10.131428!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x33a9623bf0485431%3A0xbcf0a3541b0d909!2sCebu%20Technological%20University%20-%20Barili%20Campus!5e0!3m2!1sen!2sph!4v1646842456284!5m2!1sen!2sph"
+            width="100%" height="450" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+    </section>
+    <section class="footer">
+        <div class="footer-container container">
+            <div class="footer-box">
+                <a href="#" class="logo">Moto<span>Move</span></a>
+                <div class="social">
+                    <a href="#"><i class="fa fa-facebook"></i></a>
+                    <a href="#"><i class="fa fa-instagram"></i></a>
+                    <a href="#"><i class="fa fa-linkedin"></i></a>
+                    <a href="#"><i class="fa fa-telegram"></i></a>
+                </div>
+            </div>
+            <div class="footer-box">
+                <h3>Quick Links</h3>
+                <a href="#">Home</a>
+                <a href="#">Cycles</a>
+                <a href="#">Parts</a>
+                <a href="#">Blog</a>
+            </div>
+            <div class="footer-box">
+                <h3>Legal</h3>
+                <a href="#">Privacy</a>
+                <a href="#">Refund Policy</a>
+                <a href="#">Cookie Policy</a>
+            </div>
+            <div class="footer-box">
+                <h3>Contact</h3>
+                <p>Afghanistan</p>
+                <p>India</p>
+                <p>United States</p>
+            </div>
+        </div>
+    </section>
+
+    <!--end footer-->
+    <div class="copyright">
+        <p>&#169; MotoMove All Right Reserved</p>
+    </div>
+
+
+</body>
+
+</html>
